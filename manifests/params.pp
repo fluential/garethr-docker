@@ -13,10 +13,6 @@ class docker::params {
   $service_enable               = true
   $root_dir                     = undef
   $dns                          = undef
-  case $::osfamily {
-    'Debian': { $package_source_location = 'https://get.docker.io/ubuntu' }
-    default:  { $package_source_location = '' }
-  }
   $proxy                        = undef
   $no_proxy                     = undef
   $execdriver                   = undef
@@ -24,19 +20,24 @@ class docker::params {
   $manage_package               = true
   $manage_kernel                = true
   case $::osfamily {
-    'Debain' : {
+    'Debian' : {
       if $::operatingsystem == 'Ubuntu' {
         case $::operatingsystemrelease {
           '14.04' : { $package_name = 'docker.io' }
           default: { $package_name = 'lxc-docker' }
         }
       }
+      $package_source_location = 'https://get.docker.io/ubuntu'
     }
     'RedHat' : {
       if versioncmp($::operatingsystemrelease, '6.5') < 0 {
         fail('Docker needs RedHat/CentOS version to be at least 6.5.')
       }
       $package_name = 'docker-io'
+      $package_source_location = ''
+    }
+    default: {
+      fail("${::osfamily} not supported.")
     }
   }
 }

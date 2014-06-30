@@ -23,7 +23,12 @@ describe 'docker', :type => :class do
 
 	context 'ubuntu 14.04' do
 	  let(:facts) { {
-	    :operatingsystemrelease => '14.04'
+          :osfamily        => osfamily,
+          :operatingsystem => 'Ubuntu',
+          :lsbdistid       => 'debian',
+          :lsbdistcodename => 'maverick',
+          :kernelrelease   => '3.8.0-29-generic',
+	  :operatingsystemrelease => '14.04',
 	  } }
 	  it { should contain_package('docker').with_name('docker.io').with_ensure('present') }
 	end

@@ -105,7 +105,8 @@ class docker::install {
       Package[$kernelpackage] -> Package['docker']
     }
   }
- 
+
+  #  if empty($dockerpackage) {fail("dockerpackage is empty: ${dockerpackage}") }
   if $docker::manage_package {
     package { 'docker':
       ensure => $docker::ensure,

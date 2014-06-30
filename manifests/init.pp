@@ -95,6 +95,9 @@ class docker(
   validate_bool($manage_kernel)
   validate_bool($manage_package)
 
+  if empty($package_name) {
+    fail("empty pkgname: \"${package_name}\"")
+  }
   class { 'docker::install': } ->
   class { 'docker::config': } ~>
   class { 'docker::service': } ->
