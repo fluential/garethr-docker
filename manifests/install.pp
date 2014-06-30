@@ -27,9 +27,9 @@ class docker::install {
       if ($docker::use_upstream_package_source) {
 
         if $docker::version {
-          $dockerpackage = "lxc-docker-${docker::version}"
+          $dockerpackage = "${docker::package_name}-${docker::version}"
         } else {
-          $dockerpackage = 'lxc-docker'
+          $dockerpackage = $docker::package_name
         }
 
         include apt
@@ -47,7 +47,7 @@ class docker::install {
           Apt::Source['docker'] -> Package['docker']
         }
       } else {
-        $dockerpackage = 'docker.io'
+        $dockerpackage = $docker::package_name
 
         if $docker::version and $docker::ensure != 'absent' {
           $ensure = $docker::version
@@ -58,10 +58,10 @@ class docker::install {
 
       if $::operatingsystem == 'Ubuntu' {
         case $::operatingsystemrelease {
-          # On Ubuntu 12.04 (precise) install the backported 13.04 (raring) kernel
+          # On Ubuntu 12.04 (precise) install the backported 13.10 (raring) kernel
           '12.04': { $kernelpackage = [
-                                        'linux-image-generic-lts-raring',
-                                        'linux-headers-generic-lts-raring'
+                                        'linux-image-generic-lts-saucy',
+                                        'linux-headers-generic-lts-saucy'
                                       ]
           }
           # determine the package name for 'linux-image-extra-$(uname -r)' based
@@ -83,9 +83,9 @@ class docker::install {
       $manage_kernel = false
 
       if $docker::version {
-        $dockerpackage = "docker-io-${docker::version}"
+        $dockerpackage = "${docker::package_name}-${docker::version}"
       } else {
-        $dockerpackage = 'docker-io'
+        $dockerpackage = $docker::package_name
       }
 
       if ($docker::use_upstream_package_source) {
@@ -105,7 +105,7 @@ class docker::install {
       Package[$kernelpackage] -> Package['docker']
     }
   }
-
+ 
   if $docker::manage_package {
     package { 'docker':
       ensure => $docker::ensure,

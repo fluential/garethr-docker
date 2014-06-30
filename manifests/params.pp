@@ -23,4 +23,20 @@ class docker::params {
   $storage_driver               = undef
   $manage_package               = true
   $manage_kernel                = true
+  case $::osfamily {
+    'Debain' : {
+      if $::operatingsystem == 'Ubuntu' {
+        case $::operatingsystemrelease {
+          '14.04' : { $package_name = 'docker.io' }
+          default: { $package_name = 'lxc-docker' }
+        }
+      }
+    }
+    'RedHat' : {
+      if versioncmp($::operatingsystemrelease, '6.5') < 0 {
+        fail('Docker needs RedHat/CentOS version to be at least 6.5.')
+      }
+      $package_name = 'docker-io'
+    }
+  }
 }

@@ -10,7 +10,7 @@ describe 'docker', :type => :class do
           :operatingsystem => 'Ubuntu',
           :lsbdistid       => 'debian',
           :lsbdistcodename => 'maverick',
-          :kernelrelease   => '3.8.0-29-generic'
+          :kernelrelease   => '3.8.0-29-generic',
         } }
         service_config_file = '/etc/default/docker'
 
@@ -20,6 +20,13 @@ describe 'docker', :type => :class do
         it { should contain_package('docker').with_name('lxc-docker').with_ensure('present') }
         it { should contain_apt__source('docker').with_location('https://get.docker.io/ubuntu') }
         it { should contain_file('/etc/init.d/docker').with_ensure('absent') }
+
+	context 'ubuntu 14.04' do
+	  let(:facts) { {
+	    :operatingsystemrelease => '14.04'
+	  } }
+	  it { should contain_package('docker').with_name('docker.io').with_ensure('present') }
+	end
 
         context 'with a custom version' do
           let(:params) { {'version' => '0.5.5' } }

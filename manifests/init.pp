@@ -87,6 +87,7 @@ class docker(
   $storage_driver              = $docker::params::storage_driver,
   $execdriver                  = $docker::params::execdriver,
   $manage_package              = $docker::params::manage_package,
+  $package_name                = $docker::params::package_name,
 ) inherits docker::params {
 
   validate_string($version)
