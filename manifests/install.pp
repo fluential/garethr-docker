@@ -24,13 +24,14 @@ class docker::install {
         Package['apt-transport-https'] -> Package['docker']
       }
 
-      if ($docker::use_upstream_package_source) {
+      if $docker::version {
+        $dockerpackage = "${docker::package_name}-${docker::version}"
+      } else {
+        $dockerpackage = $docker::package_name
+      }
 
-        if $docker::version {
-          $dockerpackage = "${docker::package_name}-${docker::version}"
-        } else {
-          $dockerpackage = $docker::package_name
-        }
+
+      if ($docker::use_upstream_package_source) {
 
         include apt
         apt::source { 'docker':
@@ -47,8 +48,6 @@ class docker::install {
           Apt::Source['docker'] -> Package['docker']
         }
       } else {
-        $dockerpackage = $docker::package_name
-
         if $docker::version and $docker::ensure != 'absent' {
           $ensure = $docker::version
         } else {

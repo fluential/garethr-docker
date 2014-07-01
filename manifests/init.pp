@@ -68,6 +68,10 @@
 #   Won't install or define the docker package, useful if you want to use your own package
 #   Defaults to true
 #
+# [*package_Name*]
+#   Specify custom package name
+#   Default is set on a per system basis in docker::params
+#
 class docker(
   $version                     = $docker::params::version,
   $ensure                      = $docker::params::ensure,
@@ -95,9 +99,9 @@ class docker(
   validate_bool($manage_kernel)
   validate_bool($manage_package)
 
-  if empty($package_name) {
-    fail("empty pkgname: \"${package_name}\"")
-  }
+  #if empty($package_name) {
+  #  fail("empty pkgname: \"${package_name}\"")
+  #}
   class { 'docker::install': } ->
   class { 'docker::config': } ~>
   class { 'docker::service': } ->

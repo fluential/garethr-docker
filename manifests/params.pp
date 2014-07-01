@@ -19,25 +19,31 @@ class docker::params {
   $storage_driver               = undef
   $manage_package               = true
   $manage_kernel                = true
+  $package_name_default         = 'docker.io'
   case $::osfamily {
     'Debian' : {
-      if $::operatingsystem == 'Ubuntu' {
-        case $::operatingsystemrelease {
-          '14.04' : { $package_name = 'docker.io' }
-          default: { $package_name = 'lxc-docker' }
+      case $::operatingsystem {
+        'Ubuntu' : {
+          case $::operatingsystemrelease {
+            '10.04','12.04','13.04','13.10' : { $package_name = 'lxc-docker' }
+            default: {
+              $package_name = $package_name_default
+            }
+          }
+        }
+        default: {
+          $package_name = $package_name_default
         }
       }
       $package_source_location = 'https://get.docker.io/ubuntu'
     }
     'RedHat' : {
-      if versioncmp($::operatingsystemrelease, '6.5') < 0 {
-        fail('Docker needs RedHat/CentOS version to be at least 6.5.')
-      }
-      $package_name = 'docker-io'
       $package_source_location = ''
+      $package_name = 'docker-io'
     }
     default: {
-      fail("${::osfamily} not supported.")
+      $package_source_location = ''
+      $package_name = $package_name_default
     }
   }
 }
